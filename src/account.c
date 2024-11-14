@@ -729,6 +729,9 @@ int switch_account(struct Registry_Data *reg_data, struct Registry_Data *reg_ini
 						delete_execution_history(&execution_history_data, NULL);
 						//
 						printf("Account %s restored!\e[0K\n", (char *)(reg_new_data->reg_entries[reg_new_data->idx_username].key_value));
+						if (switch_saves_folder("ux0:user", (char*)(reg_data->reg_entries[reg_data->idx_username].key_value), (char*)(reg_new_data->reg_entries[reg_new_data->idx_username].key_value)))
+							printf("Saves folder swapped!\n");
+						else printf("Saves folder didn't swap!\n");
 						wait_for_cancel_button();
 						menu_run = 0;
 						result = 1;
@@ -744,6 +747,28 @@ int switch_account(struct Registry_Data *reg_data, struct Registry_Data *reg_ini
 	free_subdirs(dirs, dir_count);
 
 	return result;
+}
+
+int switch_saves_folder(const char* base_path, const char* current_user, const char* new_user) {
+    char current_user_path[256];
+    char active_user_path[256];
+    char new_user_path[256];
+
+    snprintf(current_user_path, sizeof(current_user_path), "%s/00", base_path);
+    snprintf(active_user_path, sizeof(active_user_path), "%s/%s", base_path, current_user);
+    snprintf(new_user_path, sizeof(new_user_path), "%s/%s", base_path, new_user);
+
+    if (rename(current_user_path, active_user_path) != 0) {
+        fprintf("Error renaming directory: %s\n", current_user);
+        return 0;
+    }
+
+    if (rename(new_user_path, current_user_path) != 0) {
+        fprintf("Error renaming directory: %s\n", new_user);
+        rename(active_user_path, current_user_path);
+        return 0;
+    }
+	return 1;
 }
 
 int remove_account(struct Registry_Data *reg_data, struct Registry_Data *reg_init_data, struct File_Data *file_init_data, char *title)
