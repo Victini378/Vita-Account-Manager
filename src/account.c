@@ -758,13 +758,13 @@ int switch_saves_folder(const char* base_path, const char* current_user, const c
     snprintf(active_user_path, sizeof(active_user_path), "%s/%s", base_path, current_user);
     snprintf(new_user_path, sizeof(new_user_path), "%s/%s", base_path, new_user);
 
-    if (rename(current_user_path, active_user_path) != 0) {
-        fprintf("Error renaming directory: %s\n", current_user);
+    if (!rename(current_user_path, active_user_path)) {
+    	printf("Error renaming directory: %s\n", current_user);
         return 0;
     }
 
-    if (rename(new_user_path, current_user_path) != 0) {
-        fprintf("Error renaming directory: %s\n", new_user);
+    if (!rename(new_user_path, current_user_path)) {
+        printf("Error renaming directory: %s\n", new_user);
         rename(active_user_path, current_user_path);
         return 0;
     }
