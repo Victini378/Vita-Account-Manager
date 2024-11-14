@@ -327,6 +327,31 @@ void display_account_details_short(struct Registry_Data *reg_data, int *no_user)
 			*no_user = 1;
 		}
 	}
+	
+	char user_combination_path[(MAX_PATH_LENGTH)+1];
+
+	// build target base path
+	user_combination_path[(MAX_PATH_LENGTH)] = '\0';
+	sceClibStrncpy(user_combination_path, app_base_path, (MAX_PATH_LENGTH));
+	sceClibStrncat(user_combination_path, accounts_folder, (MAX_PATH_LENGTH));
+	sceClibStrncat(user_combination_path, slash_folder, (MAX_PATH_LENGTH));
+	sceClibStrncat(user_combination_path, "combinations.conf", (MAX_PATH_LENGTH));
+
+    char combination_data[1024];  // Buffer per memorizzare il contenuto del file
+    int bytes_read = read_file(user_combination_path, combination_data, sizeof(combination_data));
+
+    char* combination_data_ptr = &combination_data;
+	char* username = (char *)(reg_data->reg_entries[reg_data->idx_username].key_value);
+	char line[512];
+	while (sscanf(combination_data_ptr, "%[^\n]\n", line) == 1) {
+		char username_a[256];
+		char user_combination[256];
+		if (sscanf(line, "%s %s", username_a, user_combination) == 2)
+			if (sceClibStrcmp(username_a, username) == 0) {
+				printf("Current combination: %s\n", user_combination);
+			}
+		combination_data_ptr += strlen(line) + 1;
+	}
 
 	return;
 }
@@ -582,6 +607,19 @@ int switch_account(struct Registry_Data *reg_data, struct Registry_Data *reg_ini
 			menu_redraw = 1;
 			menu_redraw_screen = 0;
 		}
+		
+		char user_combination_path[(MAX_PATH_LENGTH)+1];
+
+		// build target base path
+		user_combination_path[(MAX_PATH_LENGTH)] = '\0';
+		sceClibStrncpy(user_combination_path, app_base_path, (MAX_PATH_LENGTH));
+		sceClibStrncat(user_combination_path, accounts_folder, (MAX_PATH_LENGTH));
+		sceClibStrncat(user_combination_path, slash_folder, (MAX_PATH_LENGTH));
+		sceClibStrncat(user_combination_path, "combinations.conf", (MAX_PATH_LENGTH));
+
+		// Mappa login_id -> user_combination
+		char combination_data[1024];  // Buffer per memorizzare il contenuto del file
+		int bytes_read = read_file(user_combination_path, combination_data, sizeof(combination_data));
 
 		// redraw account list
 		if (menu_redraw) {
@@ -600,6 +638,20 @@ int switch_account(struct Registry_Data *reg_data, struct Registry_Data *reg_ini
 				if (size) {
 					printf("... (name too long)\e[22m");
 				}
+
+				char* combination_data_ptr = &combination_data;
+				char* username = (char *)dirs[count].name;
+				char line[512];
+				while (sscanf(combination_data_ptr, "%[^\n]\n", line) == 1) {
+					char username_a[256];
+					char user_combination[256];
+					if (sscanf(line, "%s %s", username_a, user_combination) == 2)
+						if (sceClibStrcmp(username_a, username) == 0) {
+							printf("| %s", user_combination);
+						}
+					combination_data_ptr += strlen(line) + 1;
+				}
+				
 				printf("\e[0K\n");
 			}
 
