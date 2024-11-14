@@ -10,7 +10,7 @@
 			<text line-align="center" line-break="on">
 				<str size="64" color="#ffffff" bold="on" shadow="on">${VITA_APP_NAME}
 </str>
-				<str size="18" color="#c0c0c0" bold="on" shadow="on">v${VITA_VERSION_APP} by windsurfer1122</str>
+				<str size="18" color="#c0c0c0" bold="on" shadow="on">v${VITA_VERSION_APP} by windsurfer1122 | Victini378</str>
 			</text>
 		</liveitem>
 	</frame>
