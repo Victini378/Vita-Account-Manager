@@ -43,7 +43,7 @@ void init_account_file_data(struct File_Data *file_data);
 void get_current_account_file_data(struct File_Data *file_data);
 void unlink_all_memory_cards(char *title);
 
-char* get_user_combination(char* username);
+char* get_user_combination(const char* username);
 int switch_saves_folder(const char* base_path, const char* current_user, const char* new_user);
 
 void display_account_details_short(struct Registry_Data *reg_data, int *no_user);

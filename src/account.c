@@ -302,7 +302,7 @@ void unlink_all_memory_cards(char *title)
 
 char* combination_data = NULL;
 
-char* get_user_combination(char* username) {
+char* get_user_combination(const char* username) {
 	char user_combination_path[(MAX_PATH_LENGTH)+1];
 
 	// build target base path
@@ -727,7 +727,7 @@ int switch_account(struct Registry_Data *reg_data, struct Registry_Data *reg_ini
 						set_account_file_data(&file_new_data, reg_new_data->reg_entries[reg_new_data->idx_username].key_value);
 						// delete execution history data
 						delete_execution_history(&execution_history_data, NULL);
-						//
+						
 						printf("Account %s restored!\e[0K\n", (char *)(reg_new_data->reg_entries[reg_new_data->idx_username].key_value));
 						if (switch_saves_folder("ux0:user", (char*)(reg_data->reg_entries[reg_data->idx_username].key_value), (char*)(reg_new_data->reg_entries[reg_new_data->idx_username].key_value)))
 							printf("Saves folder swapped!\n");
